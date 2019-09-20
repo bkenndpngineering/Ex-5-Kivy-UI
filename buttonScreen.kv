@@ -1,0 +1,13 @@
+<buttonScreen>
+    name: 'button'
+    FloatLayout:
+        size_hint: None, None
+
+    ImageButton:
+        id: image_button
+        source: "../../pidev/kivy/images/DPEALogoTransparent.png"
+        size: 100,100
+        x: root.width * 0.5
+        y: 150
+        on_press: root.pressed()
+
