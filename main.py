@@ -1,5 +1,7 @@
 import os
 
+from threading import Thread
+
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.lang import Builder
@@ -13,6 +15,8 @@ from pidev.kivy.PassCodeScreen import PassCodeScreen
 from pidev.kivy.PauseScreen import PauseScreen
 from pidev.kivy import DPEAButton
 from pidev.kivy import ImageButton
+from pidev.Joystick import Joystick
+#from joystick import Joystick
 
 MIXPANEL_TOKEN = "x"
 MIXPANEL = MixPanel("Project Name", MIXPANEL_TOKEN)
@@ -38,9 +42,12 @@ class ProjectNameGUI(App):
 Window.clearcolor = (1, 1, 1, 1)  # White
 
 class buttonScreen(Screen):
+    #joystick = Joystick(0, False).start()
+
     def __init__(self, **kwargs):
         Builder.load_file('buttonScreen.kv')
         super(buttonScreen, self).__init__(**kwargs)
+
 
     def pressed(self):
         SCREEN_MANAGER.current = 'main'
@@ -49,6 +56,20 @@ class MainScreen(Screen):
 
     counter = StringProperty("0")
     toggle = ObjectProperty(False)
+
+    joystick = Joystick(0, False)
+    X_axis = ObjectProperty(0.0)
+    Y_axis = ObjectProperty(0.0)
+
+    def joystick_thread(self):
+        while 1:
+            self.joystick.refresh()
+            self.X_axis = self.joystick.get_axis('x')
+            self.Y_axis = self.joystick.get_axis('y')
+            #print(self.X_axis)
+
+    def start_joystick_Thread(self):
+        Thread(target=self.joystick_thread).start()
 
     """
     Class to handle the main screen and its associated touch events
@@ -68,7 +89,9 @@ class MainScreen(Screen):
         """
         #PauseScreen.pause(pause_scene_name='pauseScene', transition_back_scene='main', text="Test", pause_duration=5)
 
-        SCREEN_MANAGER.current = 'button'
+        PauseScreen.pause(pause_scene_name='pauseScene', transition_back_scene='button', text="LOADING BUTTON SCREEN FOR YOU", pause_duration=2)
+
+        #SCREEN_MANAGER.current = 'button'
 
     def admin_action(self):
         """
@@ -77,6 +100,7 @@ class MainScreen(Screen):
         :return: None
         """
         SCREEN_MANAGER.current = 'passCode'
+
 
 
 class AdminScreen(Screen):
@@ -152,3 +176,4 @@ if __name__ == "__main__":
     # send_event("Project Initialized")
     # Window.fullscreen = 'auto'
     ProjectNameGUI().run()
+

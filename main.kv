@@ -1,5 +1,7 @@
 <MainScreen>:
 
+    on_enter: root.start_joystick_Thread()
+
     name: 'main'
     FloatLayout:
         size_hint: None, None
@@ -18,7 +20,7 @@
         max: 100
         step: 1
         orientation: 'horizontal'
-        y: root.height *.5 - 100
+        y: root.height * .5 - 100
     Label:
         text: str(slider.value)
         y: root.height * .5 - 100
@@ -66,4 +68,16 @@
         x: root.width * 0.5
         y: 150
         on_press: root.pressed()
+
+    Label:
+        id: axis_x
+        text: "X: " + str(root.X_axis)
+        color: 0,0,0,1
+        y: 50
+
+    Label:
+        id: axis_y
+        text: "Y: " + str(root.Y_axis)
+        color: 0,0,0,1
+        y: 100
 
